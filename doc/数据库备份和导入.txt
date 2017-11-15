@@ -1,0 +1,52 @@
+ 	1.	登录数据库
+sqlplus /nolog
+conn sys/maximo as sysdba
+
+查看已连接用户
+ select sid,serial# from v$session where username='MAXIMO'; 
+ alter system kill session('','');
+2.	删除用户
+--------删除用户--------
+drop user maximo cascade;
+
+
+3.	删除表空间
+--------删除表空间--------
+DROP TABLESPACE MAXIMO_DATA INCLUDING CONTENTS AND DATAFILES;
+DROP TABLESPACE MAXIMO_INDEX INCLUDING CONTENTS AND DATAFILES;
+DROP TABLESPACE MAXIMO_TEMP INCLUDING CONTENTS AND DATAFILES;
+
+4.	创建表空间
+  4.1 查询表空间 
+   select * from dba_data_files;
+  F:\ORACLE\ORADATA\MAXPRO\SYSAUX01.DBF
+
+Create tablespace MAXIMO_DATA datafile 'F:\ORACLE\ORADATA\MAXPRO\MAXDATA.DBF' size 500M autoextend on;
+Create tablespace MAXIMO_INDEX datafile 'F:\ORACLE\ORADATA\MAXPRO\MAXINDEX.DBF' size 300M autoextend on;
+Create temporary tablespace MAXIMO_TEMP tempfile 'F:\ORACLE\ORADATA\MAXPRO\MAXTEMP.dbf' size 500M autoextend on maxsize unlimited;
+
+5.	创建用户并授权Create user maximo identified by maximo default tablespace MAXIMO_DATA temporary tablespace MAXIMO_TEMP;
+grant create job to maximo;
+grant create trigger to maximo;
+grant create session to maximo;
+grant create sequence to maximo;
+grant create synonym to maximo;
+grant create table to maximo;
+grant create view to maximo;
+grant create procedure to maximo;
+grant alter session to maximo;
+grant execute on ctxsys.ctx_ddl to maximo;
+grant dba to maximo;
+alter user maximo quota unlimited on MAXIMO_INDEX;
+
+
+先在系统中创建导出文件夹
+用sys用户登陆sqlplus,执行命令,创建存储地址并授权maximo用户：
+	create or replace directory backup_expdp as '/home/oracle';
+	grant read, write on directory backup_expdp to maximo;
+导出命令：
+	expdp maximo/maxpro@maxpro directory=backup_expdp dumpfile=20170323noon.dmp schemas=maximo nologfile=y
+
+
+用maximo用户恢复数据库
+	impdp maximo/maxpro@maxpro directory=backup_expdp dumpfile=20170309.dmp nologfile=y
