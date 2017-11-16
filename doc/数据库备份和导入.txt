@@ -1,31 +1,32 @@
- 	1.	µÇÂ¼Êı¾İ¿â
+ 	1.	ç™»å½•æ•°æ®åº“
 sqlplus /nolog
 conn sys/maximo as sysdba
 
-²é¿´ÒÑÁ¬½ÓÓÃ»§
- select sid,serial# from v$session where username='MAXIMO'; 
+æŸ¥çœ‹å·²è¿æ¥ç”¨æˆ·
+ select sid,serial# from v$session where username='MAXIMO';
  alter system kill session('','');
-2.	É¾³ıÓÃ»§
---------É¾³ıÓÃ»§--------
+2.	åˆ é™¤ç”¨æˆ·
+--------åˆ é™¤ç”¨æˆ·--------
 drop user maximo cascade;
 
 
-3.	É¾³ı±í¿Õ¼ä
---------É¾³ı±í¿Õ¼ä--------
+3.	åˆ é™¤è¡¨ç©ºé—´
+--------åˆ é™¤è¡¨ç©ºé—´--------
 DROP TABLESPACE MAXIMO_DATA INCLUDING CONTENTS AND DATAFILES;
 DROP TABLESPACE MAXIMO_INDEX INCLUDING CONTENTS AND DATAFILES;
 DROP TABLESPACE MAXIMO_TEMP INCLUDING CONTENTS AND DATAFILES;
 
-4.	´´½¨±í¿Õ¼ä
-  4.1 ²éÑ¯±í¿Õ¼ä 
+4.	åˆ›å»ºè¡¨ç©ºé—´
+  4.1 æŸ¥è¯¢è¡¨ç©ºé—´
    select * from dba_data_files;
   F:\ORACLE\ORADATA\MAXPRO\SYSAUX01.DBF
 
-Create tablespace MAXIMO_DATA datafile 'F:\ORACLE\ORADATA\MAXPRO\MAXDATA.DBF' size 500M autoextend on;
-Create tablespace MAXIMO_INDEX datafile 'F:\ORACLE\ORADATA\MAXPRO\MAXINDEX.DBF' size 300M autoextend on;
-Create temporary tablespace MAXIMO_TEMP tempfile 'F:\ORACLE\ORADATA\MAXPRO\MAXTEMP.dbf' size 500M autoextend on maxsize unlimited;
+Create tablespace MAXDATA datafile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXIMO_DATA.DBF' size 500M autoextend on;
+Create tablespace MAXIMO_INDEX datafile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXINDEX.DBF' size 300M autoextend on;
+Create temporary tablespace MAXIMO_TEMP tempfile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXTEMP.dbf' size 500M autoextend on maxsize unlimited;
 
-5.	´´½¨ÓÃ»§²¢ÊÚÈ¨Create user maximo identified by maximo default tablespace MAXIMO_DATA temporary tablespace MAXIMO_TEMP;
+5.	åˆ›å»ºç”¨æˆ·å¹¶æˆæƒ
+Create user maximo identified by maximo default tablespace MAXIMO_DATA temporary tablespace MAXIMO_TEMP;
 grant create job to maximo;
 grant create trigger to maximo;
 grant create session to maximo;
@@ -40,13 +41,23 @@ grant dba to maximo;
 alter user maximo quota unlimited on MAXIMO_INDEX;
 
 
-ÏÈÔÚÏµÍ³ÖĞ´´½¨µ¼³öÎÄ¼ş¼Ğ
-ÓÃsysÓÃ»§µÇÂ½sqlplus,Ö´ĞĞÃüÁî,´´½¨´æ´¢µØÖ·²¢ÊÚÈ¨maximoÓÃ»§£º
+å…ˆåœ¨ç³»ç»Ÿä¸­åˆ›å»ºå¯¼å‡ºæ–‡ä»¶å¤¹
+ç”¨sysç”¨æˆ·ç™»é™†sqlplus,æ‰§è¡Œå‘½ä»¤,åˆ›å»ºå­˜å‚¨åœ°å€å¹¶æˆæƒmaximoç”¨æˆ·ï¼š
 	create or replace directory backup_expdp as '/home/oracle';
 	grant read, write on directory backup_expdp to maximo;
-µ¼³öÃüÁî£º
+å¯¼å‡ºå‘½ä»¤ï¼š
 	expdp maximo/maxpro@maxpro directory=backup_expdp dumpfile=20170323noon.dmp schemas=maximo nologfile=y
 
 
-ÓÃmaximoÓÃ»§»Ö¸´Êı¾İ¿â
+ç”¨maximoç”¨æˆ·æ¢å¤æ•°æ®åº“
 	impdp maximo/maxpro@maxpro directory=backup_expdp dumpfile=20170309.dmp nologfile=y
+drop tablespace MAXIMO_DATA including contents cascade constraints;
+SELECT INDEX_NAME,I.TABLE_NAME FROM DBA_INDEXES I, DBA_TABLES T
+WHERE T.TABLE_NAME=I.TABLE_NAME
+AND T.OWNER=I.OWNER
+AND I.INDEX_TYPE='DOMAIN'
+and t.TABLESPACE_NAME='&MAXIMO_DATA';
+
+ SELECT SECONDARY_OBJECT_OWNER,SECONDARY_OBJECT_NAME,SECONDARY_OBJDATA_TYPE FROM DBA_SECONDARY_OBJECTS WHERE INDEX_NAME='INDEX_NAME_From_Previous_Query';
+
+select 'drop materialized view '||owner||'.'||segment_name||' ;' from dba_segments where segment_name in (select mview_name from dba_mviews)   and tablespace_name = 'MAXIMO_DATA'
