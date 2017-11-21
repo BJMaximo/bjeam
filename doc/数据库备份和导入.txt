@@ -21,23 +21,24 @@ DROP TABLESPACE MAXIMO_TEMP INCLUDING CONTENTS AND DATAFILES;
    select * from dba_data_files;
   F:\ORACLE\ORADATA\MAXPRO\SYSAUX01.DBF
 
-Create tablespace MAXDATA datafile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXIMO_DATA.DBF' size 500M autoextend on;
+Create tablespace ARMY_TABLESPACE datafile 'F:\ORACLEDB\ORADATA\ORCL\ARMY_TABLESPACE.DBF' size 500M autoextend on;
 Create tablespace MAXIMO_INDEX datafile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXINDEX.DBF' size 300M autoextend on;
 Create temporary tablespace MAXIMO_TEMP tempfile 'F:\OracleDB\oradata\BJMAXIMO\DATAFILE\MAXTEMP.dbf' size 500M autoextend on maxsize unlimited;
 
 5.	创建用户并授权
 Create user maximo identified by maximo default tablespace MAXIMO_DATA temporary tablespace MAXIMO_TEMP;
-grant create job to maximo;
-grant create trigger to maximo;
-grant create session to maximo;
-grant create sequence to maximo;
-grant create synonym to maximo;
-grant create table to maximo;
-grant create view to maximo;
-grant create procedure to maximo;
-grant alter session to maximo;
+grant create job to xinke;
+grant create trigger to xinke;
+grant create session to xinke;
+grant create sequence to xinke;
+grant create synonym to xinke;
+grant create table to xinke;
+grant create view to xinke;
+grant create procedure to xinke;
+grant alter session to xinke;
+grant dba to xinke;
 grant execute on ctxsys.ctx_ddl to maximo;
-grant dba to maximo;
+
 alter user maximo quota unlimited on MAXIMO_INDEX;
 
 
@@ -51,13 +52,7 @@ alter user maximo quota unlimited on MAXIMO_INDEX;
 
 用maximo用户恢复数据库
 	impdp maximo/maxpro@maxpro directory=backup_expdp dumpfile=20170309.dmp nologfile=y
-drop tablespace MAXIMO_DATA including contents cascade constraints;
-SELECT INDEX_NAME,I.TABLE_NAME FROM DBA_INDEXES I, DBA_TABLES T
-WHERE T.TABLE_NAME=I.TABLE_NAME
-AND T.OWNER=I.OWNER
-AND I.INDEX_TYPE='DOMAIN'
-and t.TABLESPACE_NAME='&MAXIMO_DATA';
+	
+	
+	  impdp xinke/xinke2016@orcl  directory=data_pump_dir remap_schema = armyuser:xinke dumpfile=20171121.DMP remap_tablespace=army_tablespace:xxx
 
- SELECT SECONDARY_OBJECT_OWNER,SECONDARY_OBJECT_NAME,SECONDARY_OBJDATA_TYPE FROM DBA_SECONDARY_OBJECTS WHERE INDEX_NAME='INDEX_NAME_From_Previous_Query';
-
-select 'drop materialized view '||owner||'.'||segment_name||' ;' from dba_segments where segment_name in (select mview_name from dba_mviews)   and tablespace_name = 'MAXIMO_DATA'
