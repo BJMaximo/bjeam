@@ -23,17 +23,14 @@ import psdi.util.MXException;
 
 import java.rmi.RemoteException;
 
-public class FldDepment extends MAXTableDomain   {
+public class FldDepment extends MAXTableDomain {
     public FldDepment(MboValue mbv) throws MXException, RemoteException {
         super(mbv);
         MboRemote mbo = getMboValue().getMbo();
-        String personid = mbo.getUserInfo().getPersonId();//获取到当前用户登录的用户信息
-        //获取用户当前登录的部门ID
-     //   app.getBeanForApp().getMbo().getUserInfo().getPersonId();
-        String thisAttr = this.getMboValue().getAttributeName();
-        this.setRelationship("bjdepartment", "departmentnum=:" + thisAttr);
-        this.setListCriteria("status in (select value from synonymdomain where maxvalue='ACTIVE' and domainid='PERSONSTATUS')");
-        this.setErrorMessage("person", "InvalidPerson");
-        setLookupKeyMapInOrder(new String[] { personid}, new String[] { "COMPANY" });
+        String thisAttr = this.getMboValue().getAttributeName();//获取当前操作的表名
+        this.setRelationship("BJDEPT", " BJDEPTNUM=:" + thisAttr);
+         String[] deptNum = {"BJDEPTNUM"};////设置数据库中对象的列
+        String[] attr = {thisAttr};////设置要填充的界面对象上的列,该列要与数据库表列一一对应;
+        setLookupKeyMapInOrder(attr, deptNum);//设置对应关系;
     }
 }
