@@ -1,4 +1,4 @@
-package wp.common;
+package wp.dialog;
 
 import psdi.app.system.MaxDomain;
 import psdi.mbo.MboRemote;
@@ -16,7 +16,7 @@ import java.util.Vector;
 /**
  * ╔════════════════════════════════╗
  * §File Name:  SelectMorePerson.java
- * §File Path: wp.common.SelectMorePerson
+ * §File Path: wp.dialog.SelectMorePerson
  * §Descrption:
  * §Version:  V0.1
  * §Create Date:   2017/12/15
