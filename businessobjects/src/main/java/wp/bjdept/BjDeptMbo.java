@@ -35,7 +35,7 @@ public class BjDeptMbo extends Mbo implements HierarchicalMboRemote,MboRemote {
     }
 
     public boolean hasChildren() throws MXException, RemoteException {
-        String where = " PARENT=" + getInt("BJDEPTID") + "";
+        String where = " PARENTID=" + getInt("BJDEPTID") + "";
         MboSetRemote msr = getMboSet("$BJDEPT", "BJDEPT", where);
         boolean rtn = !(msr.isEmpty());
         msr.close();
@@ -44,10 +44,10 @@ public class BjDeptMbo extends Mbo implements HierarchicalMboRemote,MboRemote {
 
     public MboRemote getParent() throws MXException, RemoteException {
         MboRemote mbortn = null;
-        if (isNull("parent")){
+        if (isNull("PARENTID")){
             return null;
         }
-        MboSetRemote msr = getMboSet("parent");
+        MboSetRemote msr = getMboSet("PARENTID");
         if (!(msr.isEmpty())){
             mbortn = msr.getMbo(0);
         }
@@ -58,6 +58,6 @@ public class BjDeptMbo extends Mbo implements HierarchicalMboRemote,MboRemote {
     }
 
     public boolean hasParents() throws MXException, RemoteException {
-        return isNull("PARENT");
+        return isNull("PARENTID");
     }
 }

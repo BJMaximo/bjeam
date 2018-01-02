@@ -36,7 +36,7 @@ public class BjDeptMboSet extends HierarchicalMboSet implements HierarchicalMboS
     public MboValueData[][] getChildren(String s, String s1, String[] as, int i) throws MXException, RemoteException {
         reset();
         resetQbe();
-        setWhere(" PARENT ='" + s1 + "'");
+        setWhere(" PARENTID ='" + s1 + "'");
         setOrderBy(" orderby ");
         reset();
         if (!(isEmpty()))
@@ -55,7 +55,7 @@ public class BjDeptMboSet extends HierarchicalMboSet implements HierarchicalMboS
     public MboValueData[][] getTop(String[] as, int i) throws MXException, RemoteException {
         reset();
         resetQbe();
-        setWhere(" parent is null");
+        setWhere(" PARENTID is null");
         setOrderBy(" orderby");
         reset();
         if (isEmpty()){
