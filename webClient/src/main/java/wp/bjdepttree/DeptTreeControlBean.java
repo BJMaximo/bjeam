@@ -28,7 +28,6 @@ public class DeptTreeControlBean extends TreeControlBean {
     }
 
     public int selectrecord() throws MXException, RemoteException {
-        System.out.println("选择中了当前行。。。。");
         return 1;
     }
 
