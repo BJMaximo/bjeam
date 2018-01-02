@@ -234,4 +234,20 @@ public class BjDate {
         return 0;
     }
 
+
+    /**
+     * 根据下次提醒日期和提前提醒天数，返回提前提醒日期字符串。
+     *  edit by lupe
+     * @param nextDate 下次提醒日期
+     * @param tqtxDays  提前提醒天数
+     * @return  提前提醒日期
+     */
+    public static String calculationDate(Date nextDate,int tqtxDays){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(nextDate);
+        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)-tqtxDays);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(calendar.getTime());
+    }
+
 }
