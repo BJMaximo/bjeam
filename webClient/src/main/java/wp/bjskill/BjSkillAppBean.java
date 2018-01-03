@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 /**
  * ╔════════════════════════════════╗
  * §File Name:  BjAttAppBean.java
- * §File Path: wp.bjcontract.BjContractAppBean
- * §Descrption:技改管理应用程序AppBean
+ * §File Path: wp.bjskill.BjSkillAppBean
+ * §Descrption:技改管理（发动机）应用程序AppBean
  * §Version:  V0.1
  * §Create Date:   2018/1/3
  * §IDE:    IntelliJ IDEA.2017
