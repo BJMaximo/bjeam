@@ -1,11 +1,11 @@
 package wp.common;
 
-import psdi.mbo.MAXTableDomain;
-import psdi.mbo.MboRemote;
-import psdi.mbo.MboValue;
+import psdi.mbo.*;
+import psdi.server.MXServer;
 import psdi.util.MXException;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -23,20 +23,25 @@ import java.util.Vector;
  * ╚════════════════════════════════╝
  */
 public class FldPersonByOrg extends MAXTableDomain {
+    HashMap<String, String[][]> cachedKeyMapHash = new HashMap(2);
+    String listWhere = null;
+    String multiKeyWhereForLookup = null;
+    String objectName = null;
+
     public FldPersonByOrg(MboValue mbv) throws MXException, RemoteException {
         super(mbv);
         MboRemote mbo = getMboValue().getMbo();
         String thisAttr = this.getMboValue().getAttributeName();//获取当前操作的表字段
-         StringBuffer listWhereSql = new StringBuffer();//条件语句组装
+        StringBuffer listWhereSql = new StringBuffer();//条件语句组装
         String where = "";
         listWhereSql.append(" status in (select value from synonymdomain where maxvalue='ACTIVE' and domainid='PERSONSTATUS') ");
-        where=listWhereSql.toString();
+        where = listWhereSql.toString();
         MboValue mboValue = this.getMboValue();
         if (!mboValue.isNull()) {
             String orgId = mboValue.getString();
             String siteorg = this.getMboSet().getMboSetInfo().getSiteOrgTypeAsString();
             listWhereSql.append(" AND BJDEPTNUM  IN (SELECT BJDEPTNUM FROM bjdept WHERE orgid = '%s' ) ");
-            where+= String.format(listWhereSql.toString(), orgId);
+            where += String.format(listWhereSql.toString(), orgId);
         }
 
         this.setRelationship("PERSON", "personid=:" + thisAttr);
@@ -44,9 +49,7 @@ public class FldPersonByOrg extends MAXTableDomain {
         String[] persionIds = {"personid"};//设置数据库中对象的列
         String[] attr = {thisAttr};////设置要填充的界面对象上的列,该列要与数据库表列一一对应;
         setLookupKeyMapInOrder(attr, persionIds);//设置对应关系;
-        Vector v= mbo.getThisMboSet().getSelection();
-        System.out.println("============");
+         System.out.println("============");
     }
-
 
 }

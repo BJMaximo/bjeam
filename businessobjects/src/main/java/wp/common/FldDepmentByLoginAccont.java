@@ -35,9 +35,9 @@ public class FldDepmentByLoginAccont extends MAXTableDomain {
         StringBuffer listWhereSql = new StringBuffer();//条件语句组装
         listWhereSql.append(" bjdeptid IN( ");
         listWhereSql.append(" SELECT bjdeptid FROM BJDEPT M start WITH m.Bjdeptnum= ");
-        listWhereSql.append("(SELECT Bjdeptnum FROM BJDEPT M  WHERE M.PARENT IS NULL AND M.ORGID='%s'");
+        listWhereSql.append("(SELECT Bjdeptnum FROM BJDEPT M  WHERE M.Parentid IS NULL AND M.ORGID='%s'");
         listWhereSql.append(" START WITH M.BJDEPTNUM =(SELECT BJDEPTNUM FROM PERSON WHERE PERSONID = '%s')   ");
-        listWhereSql.append("  CONNECT BY NOCYCLE PRIOR M.PARENT = M.BJDEPTNUM )  connect by m.parent=prior m.Bjdeptnum ) ");
+        listWhereSql.append("  CONNECT BY NOCYCLE PRIOR M.Parentid = M.Bjdeptid )  connect by m.parentid=prior m.Bjdeptid ) ");
          String where = String.format(listWhereSql.toString(), orgId, personId);
         this.setRelationship("BJDEPT", where);
         this.setListCriteria(where);//设置过虑条件
